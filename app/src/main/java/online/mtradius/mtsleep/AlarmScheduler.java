@@ -50,6 +50,19 @@ public final class AlarmScheduler {
         pref(c).edit().putLong("armed_wake",epochMillis).apply();
         return true;
     }
+    /** Short isolated alarm test; does not overwrite the user's saved wake alarm. */
+    public static boolean test(Context c){
+        if(!canExact(c))return false;
+        Intent i=new Intent(c,AlarmReceiver.class);
+        i.setAction("online.mtradius.mtsleep.TEST");
+        PendingIntent pi=PendingIntent.getBroadcast(c,ALARM_ID+1,i,
+            PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
+        try{
+            ((AlarmManager)c.getSystemService(Context.ALARM_SERVICE))
+                .setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+15000L,pi);
+            return true;
+        }catch(SecurityException e){return false;}
+    }
     public static void cancel(Context c){
         ((AlarmManager)c.getSystemService(Context.ALARM_SERVICE)).cancel(receiver(c));
         pref(c).edit().remove("armed_wake").apply();

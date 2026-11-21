@@ -11,9 +11,13 @@ import android.os.PowerManager;
 
 public final class AlarmReceiver extends BroadcastReceiver {
     @Override public void onReceive(Context context,Intent intent) {
-        if(!"online.mtradius.mtsleep.WAKE".equals(intent.getAction()))return;
-        AlarmScheduler.pref(context).edit().remove("armed_wake").apply();
-        context.stopService(new Intent(context,SnoreService.class));
+        boolean waking="online.mtradius.mtsleep.WAKE".equals(intent.getAction());
+        boolean testing="online.mtradius.mtsleep.TEST".equals(intent.getAction());
+        if(!waking && !testing)return;
+        if(waking){
+            AlarmScheduler.pref(context).edit().remove("armed_wake").apply();
+            context.stopService(new Intent(context,SnoreService.class));
+        }
         AlarmScheduler.channels(context);
         Intent ring=new Intent(context,AlarmSoundService.class);
         try {

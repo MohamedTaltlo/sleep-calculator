@@ -240,7 +240,16 @@ public final class MainActivity extends Activity {
         Ui.add(toneCard,loud,10);
         Button task=Ui.button(this,(challenge?"☑ ":"☐ ")+"حل 3 مسائل حسابية لإيقاف المنبه",false);
         task.setOnClickListener(v->{challenge=!challenge;save();render();});
-        Ui.add(toneCard,task,0);
+        Ui.add(toneCard,task,10);
+        Button testAlarm=Ui.button(this,"اختبار صوت المنبه بعد 15 ثانية",false);
+        testAlarm.setOnClickListener(v->{
+            if(!AlarmScheduler.canExact(this)){requestExact();return;}
+            if(!notificationsOk()){requestNotifications();return;}
+            if(!fullScreenOk()){requestFullScreen();return;}
+            if(AlarmScheduler.test(this))toast("اختبار المنبه بعد 15 ثانية؛ لن يغيّر موعد منبهك المحفوظ");
+            else toast("تعذر جدولة الاختبار");
+        });
+        Ui.add(toneCard,testAlarm,0);
         Ui.add(root,toneCard,0);
 
         LinearLayout micCard=Ui.card(this);
