@@ -97,7 +97,7 @@ public final class AlarmSoundService extends Service {
         try{
             temp.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build());
-            temp.setDataSource(this,uri); temp.setLooping(true); temp.prepare(); temp.start();
+            temp.setDataSource(this,uri); temp.prepare(); temp.setLooping(true); temp.start();
             player=temp; return true;
         }catch(Exception ex){try{temp.release();}catch(Exception ignored){} return false;}
     }

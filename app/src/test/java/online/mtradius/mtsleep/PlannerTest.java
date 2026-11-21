@@ -26,9 +26,22 @@ public class PlannerTest {
         assertEquals(0, p.differenceMinutes);
     }
 
+    @Test public void doesNotSkipNextAlarmIfSleepOnsetIsAfterTarget() {
+        Planner.Plan p = Planner.calculate(time(2026, 11, 21, 7, 50),8,0,90,15,45,0);
+        Calendar wake = Calendar.getInstance();
+        wake.setTimeInMillis(p.wakeMillis);
+        assertEquals(21, wake.get(Calendar.DAY_OF_MONTH));
+        assertEquals(8, wake.get(Calendar.HOUR_OF_DAY));
+        assertEquals(0, p.sleepMinutes);
+    }
+
     @Test public void calculatesAcrossMidnight() {
         Planner.Plan p = Planner.calculate(time(2026, 11, 21, 23, 35),8,0,90,15,45,0);
         assertTrue(p.targetMillis > p.bedMillis);
-        assertEquals(2026, Calendar.getInstance().get(Calendar.YEAR));
+        Calendar wake = Calendar.getInstance();
+        wake.setTimeInMillis(p.wakeMillis);
+        assertEquals(22, wake.get(Calendar.DAY_OF_MONTH));
+        assertEquals(7, wake.get(Calendar.HOUR_OF_DAY));
+        assertEquals(20, wake.get(Calendar.MINUTE));
     }
 }

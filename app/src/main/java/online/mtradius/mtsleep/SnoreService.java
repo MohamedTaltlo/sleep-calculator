@@ -80,7 +80,8 @@ public final class SnoreService extends Service {
             long lastWrite=System.currentTimeMillis();
             while(running){
                 int n=recorder.read(samples,0,samples.length);
-                if(n<=0)continue;
+                if(n<0)throw new IllegalStateException("Microphone read error: "+n);
+                if(n==0)continue;
                 double energy=0;int crosses=0;
                 short previous=samples[0];
                 for(int i=0;i<n;i++){

@@ -49,7 +49,8 @@ public final class Planner {
             throw new IllegalArgumentException("Invalid cycle or onset");
         long asleep = bedMillis + onsetMinutes * MINUTE;
         long target = nextTarget(bedMillis, targetHour, targetMinute);
-        if (target <= asleep) target = nextTarget(asleep, targetHour, targetMinute);
+        // Keep the nearest upcoming requested alarm even when sleep onset is later;
+        // never silently skip an appointment by moving the alarm to tomorrow.
         long chosen = target;
         int chosenCycles = Math.max(0, (int)((target - asleep) / (cycleMinutes * MINUTE)));
         boolean aligned = false;
