@@ -37,6 +37,7 @@ public final class MainActivity extends Activity {
     private static final int REQUEST_RINGTONE=23;
 
     private SharedPreferences prefs;
+    private ScrollView activeScroll;
     private int hour=8, minute=0, choiceMode=-1;
     private long planBase;
     private boolean advanced=false;
@@ -136,6 +137,7 @@ public final class MainActivity extends Activity {
     }
 
     private void render(){
+        final int previousScroll=activeScroll==null?0:activeScroll.getScrollY();
         final WakeChoices.Options options=WakeChoices.plan(planBase,hour,minute);
         final int selected=choiceMode<0?options.recommended:choiceMode;
         final long wakeAt=options.timeFor(selected);
@@ -219,6 +221,10 @@ public final class MainActivity extends Activity {
             "حساب الدورات تقديري. للأمور المهمة استخدم منبه احتياطي.",
             12,Ui.MUTED,false),0);
         setContentView(scroll);
+        activeScroll=scroll;
+        if(advanced && previousScroll>0){
+            scroll.post(()->scroll.scrollTo(0,previousScroll));
+        }
     }
 
     private void armSelected(int mode){
